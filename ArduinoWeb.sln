@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.572
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.156
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArduinoWeb", "ArduinoWeb\ArduinoWeb.csproj", "{435782F6-B7F9-4B2B-A4F6-9A31E9F5A6A3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebServer", "WebServer\WebServer.csproj", "{61659115-75CD-4276-84C6-26FFBC1C0B82}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebServer.UnitTests", "WebServer.UnitTests\WebServer.UnitTests.csproj", "{CBEA3451-FC38-4E00-AD2B-D174B764798D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{435782F6-B7F9-4B2B-A4F6-9A31E9F5A6A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{435782F6-B7F9-4B2B-A4F6-9A31E9F5A6A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{435782F6-B7F9-4B2B-A4F6-9A31E9F5A6A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{435782F6-B7F9-4B2B-A4F6-9A31E9F5A6A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61659115-75CD-4276-84C6-26FFBC1C0B82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61659115-75CD-4276-84C6-26FFBC1C0B82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61659115-75CD-4276-84C6-26FFBC1C0B82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61659115-75CD-4276-84C6-26FFBC1C0B82}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBEA3451-FC38-4E00-AD2B-D174B764798D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBEA3451-FC38-4E00-AD2B-D174B764798D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBEA3451-FC38-4E00-AD2B-D174B764798D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBEA3451-FC38-4E00-AD2B-D174B764798D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
