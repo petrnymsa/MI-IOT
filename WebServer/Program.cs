@@ -80,7 +80,7 @@ namespace WebServer
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args, string ipAdress = "") =>
             WebHost.CreateDefaultBuilder(args)
-                .UseUrls("http://localhost:5000", $"http://10.0.0.145:5000")
+                .UseUrls("http://localhost:5000", $"http://{ipAdress}:5000")
                 .UseStartup<Startup>();
 
         public static string GetLocalIPAddress()

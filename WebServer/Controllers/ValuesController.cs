@@ -15,27 +15,30 @@ namespace WebServer.Controllers
     public class ValuesController : ControllerBase
     {
         private readonly ServerDbContext _context;
-        private readonly IInputDataParser inputDataParser;
+      //  private readonly IInputDataParser inputDataParser;
 
-        public ValuesController(ServerDbContext context, IInputDataParser inputDataParser)
+        static List<string> raws = new List<string>();
+
+        public ValuesController(ServerDbContext context)
         {
             this._context = context;
-            this.inputDataParser = inputDataParser;
+         //   this.inputDataParser = inputDataParser;
         }
 
         [HttpGet]
-        public List<TemperatureSensorSnapshot> Get()
+        public List<string> Get()
         {
-            var result = inputDataParser.Parse("24.5;0.8;0.1f", DateTime.Now);
-            var snapshots = _context.TemperatureSensorSnapshots.ToList();
-            return snapshots;
+
+            //  var snapshots = _context.TemperatureSensorSnapshots.ToList();
+            // return snapshots;
+            return raws;
         }
 
         [HttpPost]
         public async Task<ActionResult> Add()
         {
             var raw = await Request.GetRawBodyStringAsync();
-
+            raws.Add(raw);
 
             return Ok();
         }
