@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import * as signalR from "@aspnet/signalr";
+import * as signalR from '@aspnet/signalr';
 
 export interface ChartModel {
   data: any[];
@@ -10,7 +10,6 @@ export interface ChartModel {
   providedIn: 'root'
 })
 export class SignalRService {
-
   public data: ChartModel[];
 
   private hubConnection: signalR.HubConnection;
@@ -27,13 +26,13 @@ export class SignalRService {
     this.hubConnection
       .start()
       .then(() => console.log('Connection started'))
-      .catch(err => console.log('Error while starting connection: ' + err))
-  }
+      .catch(err => console.log('Error while starting connection: ' + err));
+  };
 
   public addTransferChartDataListener = () => {
-    this.hubConnection.on('transferchartdata', (data) => {
+    this.hubConnection.on('transferchartdata', data => {
       this.data = data;
       console.log(data);
     });
-  }
+  };
 }

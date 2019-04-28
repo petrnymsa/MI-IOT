@@ -1,23 +1,22 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  MatDatepickerModule,
+  MatInputModule,
+  MatNativeDateModule
+} from '@angular/material';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
-
-import { AppComponent } from './app.component';
-import { NavMenuComponent } from './nav-menu/nav-menu.component';
-import { HomeComponent } from './home/home.component';
-import { MyBarChartComponent } from './my-bar-chart/my-bar-chart.component';
-
 import { ChartsModule } from 'ng2-charts';
 
+import { AppComponent } from './app.component';
+import { HomeComponent } from './home/home.component';
+import { NavMenuComponent } from './nav-menu/nav-menu.component';
+
 @NgModule({
-  declarations: [
-    AppComponent,
-    NavMenuComponent,
-    HomeComponent,
-    MyBarChartComponent
-  ],
+  declarations: [AppComponent, NavMenuComponent, HomeComponent],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
@@ -25,7 +24,12 @@ import { ChartsModule } from 'ng2-charts';
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' }
     ]),
-    ChartsModule
+    ChartsModule,
+    MatDatepickerModule,
+    MatInputModule,
+    MatNativeDateModule,
+    ReactiveFormsModule,
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

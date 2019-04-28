@@ -12,4 +12,11 @@ export class RoomApiService {
   getAll() {
     return this.http.get(this.baseUrl + '/api/room');
   }
+
+  getFrom(from: Date) {
+    console.log(from);
+    const fromStr = from.toISOString();
+    console.log(fromStr);
+    return this.http.get(this.baseUrl + '/api/room?from=' + fromStr);
+  }
 }

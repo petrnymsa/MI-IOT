@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using WebServer.Common;
 using WebServer.Data;
+using WebServer.Hub;
 using WebServer.Models;
 
 namespace WebServer.Controllers
@@ -15,11 +17,13 @@ namespace WebServer.Controllers
     {
         private readonly ServerDbContext _context;
         private readonly IInputDataParser<TemperatureSensorSnapshot> parser;
+        private readonly IHubContext<RoomHub> roomHub;
 
-        public RoomController(ServerDbContext context, IInputDataParser<TemperatureSensorSnapshot> inputDataParser)
+        public RoomController(ServerDbContext context, IInputDataParser<TemperatureSensorSnapshot> inputDataParser, IHubContext<RoomHub> roomHub)
         {
             this._context = context;
             this.parser = inputDataParser;
+            this.roomHub = roomHub;
         }
 
         //[HttpGet]
@@ -60,6 +64,8 @@ namespace WebServer.Controllers
 
             await _context.TemperatureSensorSnapshots.AddAsync(snapshot);
             await _context.SaveChangesAsync();
+
+            await roomHub.Clients.All.SendAsync(RoomHub.UpdateMessage, snapshot);
 
             return Ok();
         }

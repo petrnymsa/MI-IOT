@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
 using WebServer.Data;
+using WebServer.Hub;
 
 namespace WebServer
 {
@@ -37,6 +38,7 @@ namespace WebServer
             });
 
             services.AddSignalR();
+
             //configure EF
             var connectionString = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ServerDbContext>(options =>
@@ -68,10 +70,10 @@ namespace WebServer
 
             app.UseCors("CorsPolicy");
 
-            //app.UseSignalR(routes =>
-            //{
-            //    routes.MapHub<ChartHub>("/chart");
-            //});
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<RoomHub>("/hub/room");
+            });
 
             //   app.UseHttpsRedirection();
 

@@ -12,5 +12,7 @@ namespace WebServer.Models
         public float Humidity { get; set; }
 
         public DateTime Date { get; set; }
+
+        public override string ToString() => $"{Id};{Temperature};{Humidity};{Date}";
     }
 }
