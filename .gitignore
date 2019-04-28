@@ -518,3 +518,4 @@ MigrationBackup/
 
 ClientApp/.vscode/
 ClientApp/.angulardoc.json
+.angulardoc.json
