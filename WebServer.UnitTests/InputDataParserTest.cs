@@ -12,34 +12,19 @@ namespace WebServer.UnitTests
         [Test]
         public void Parse_OnlyTempSensor_ShouldReturnCorrectly()
         {
-            var parser = new InputDataParser();
+            var parser = new TemperatureSensorDataParser();
             var input = "18.1;0.5";
             var result = parser.Parse(input, DateTime.Now);
 
-            Assert.NotNull(result.TemperatureSensor);
-            Assert.IsNull(result.HumiditySensor);
-            Assert.AreEqual(18.1f, result.TemperatureSensor.Temperature);
-            Assert.AreEqual(0.5f, result.TemperatureSensor.Humidity);
-        }
-
-        [Test]
-        public void Parse_BothSensors_ShouldReturnCorrectly()
-        {
-            var parser = new InputDataParser();
-            var input = "18.1;0.5;0.8";
-            var result = parser.Parse(input, DateTime.Now);
-
-            Assert.NotNull(result.TemperatureSensor);
-            Assert.NotNull(result.HumiditySensor);
-            Assert.AreEqual(18.1f, result.TemperatureSensor.Temperature);
-            Assert.AreEqual(0.5f, result.TemperatureSensor.Humidity);
-            Assert.AreEqual(0.8f, result.HumiditySensor.Humidity);
+            Assert.NotNull(result);
+            Assert.AreEqual(18.1f, result.Temperature);
+            Assert.AreEqual(0.5f, result.Humidity);
         }
 
         [Test]
         public void Parse_OnlyTempSensor_InvalidSize_ShouldRaiseException()
         {
-            var parser = new InputDataParser();
+            var parser = new TemperatureSensorDataParser();
             var input = "18.1;";          
 
 
@@ -52,7 +37,7 @@ namespace WebServer.UnitTests
         [Test]
         public void Parse_OnlyTempSensor_InvalidNumbers_ShouldRaiseException()
         {
-            var parser = new InputDataParser();
+            var parser = new TemperatureSensorDataParser();
             var input = "18.1;0.dsaa";
 
 

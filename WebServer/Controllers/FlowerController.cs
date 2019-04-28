@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebServer.Common;
 using WebServer.Data;
@@ -12,32 +11,34 @@ namespace WebServer.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ValuesController : ControllerBase
+    public class FlowerController : ControllerBase
     {
         private readonly ServerDbContext _context;
-        private readonly IInputDataParser inputDataParser;
+        private readonly IInputDataParser<HumiditySensorSnapshot> parser;
 
-        public ValuesController(ServerDbContext context, IInputDataParser inputDataParser)
+        public FlowerController(ServerDbContext context, IInputDataParser<HumiditySensorSnapshot> inputDataParser)
         {
             this._context = context;
-            this.inputDataParser = inputDataParser;
+            this.parser = inputDataParser;
         }
 
         [HttpGet]
-        public List<TemperatureSensorSnapshot> Get()
+        public List<HumiditySensorSnapshot> Get()
         {
-            var result = inputDataParser.Parse("24.5;0.8;0.1f", DateTime.Now);
-            var snapshots = _context.TemperatureSensorSnapshots.ToList();
-            return snapshots;
-        }
+            return _context.HumiditySensorSnapshots.ToList();
+        }     
 
         [HttpPost]
         public async Task<ActionResult> Add()
         {
             var raw = await Request.GetRawBodyStringAsync();
+            var snapshot = parser.Parse(raw, DateTime.Now);
 
+            await _context.HumiditySensorSnapshots.AddAsync(snapshot);
+            await _context.SaveChangesAsync();
 
             return Ok();
         }
     }
 }
+

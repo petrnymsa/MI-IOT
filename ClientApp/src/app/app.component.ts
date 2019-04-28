@@ -14,30 +14,39 @@ export class AppComponent {
     scaleShowVerticalLines: true,
     responsive: true,
     scales: {
-      yAxes: [{
-        ticks: {
-          beginAtZero: true
+      yAxes: [
+        {
+          ticks: {
+            beginAtZero: true
+          }
         }
-      }]
+      ]
     }
   };
   public chartLabels: string[] = ['Real time data for the chart'];
   public chartType: string = 'bar';
   public chartLegend: boolean = true;
-  public colors: any[] = [{ backgroundColor: '#5491DA' }, { backgroundColor: '#E74C3C' }, { backgroundColor: '#82E0AA' }, { backgroundColor: '#E5E7E9' }]
+  public colors: any[] = [
+    { backgroundColor: '#5491DA' },
+    { backgroundColor: '#E74C3C' },
+    { backgroundColor: '#82E0AA' },
+    { backgroundColor: '#E5E7E9' }
+  ];
 
-  constructor(public signalRService: SignalRService, private http: HttpClient) { }
+  constructor(
+    public signalRService: SignalRService,
+    private http: HttpClient
+  ) {}
 
   ngOnInit() {
-    this.signalRService.startConnection();
+    /*this.signalRService.startConnection();
     this.signalRService.addTransferChartDataListener();
-    this.startHttpRequest();
+    this.startHttpRequest(); */
   }
 
   private startHttpRequest = () => {
-    this.http.get('http://localhost:5001/api/chart')
-      .subscribe(res => {
-        console.log(res);
-      })
-  }
+    this.http.get('http://localhost:5001/api/chart').subscribe(res => {
+      console.log(res);
+    });
+  };
 }

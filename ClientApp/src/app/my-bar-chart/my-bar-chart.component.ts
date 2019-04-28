@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 
 import { ChartDataSets, ChartOptions, Tooltip } from 'chart.js';
 import { Color, BaseChartDirective, Label } from 'ng2-charts';
+import { HttpClient } from '@angular/common/http';
+import { httpFactory } from '@angular/platform-server/src/http';
 //import * as pluginAnnotations from 'chartjs-plugin-annotation';
 
 @Component({
@@ -89,9 +91,13 @@ export class MyBarChartComponent implements OnInit {
 
   //@ViewChild(BaseChartDirective) chart: BaseChartDirective;
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
 
   ngOnInit() {
+
+    this.http.get("localhost:5000/api/room").subscribe(obs => {
+
+    });
   }
 
 }
