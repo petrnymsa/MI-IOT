@@ -1,5 +1,5 @@
 import { TemperatureSensor } from './../data/TemperatureSensor';
-import { Chart } from 'chart.js';
+import { Chart, ChartData } from 'chart.js';
 import { Component, OnInit } from '@angular/core';
 import { RoomApiService } from '../services/room-api.service';
 import { MatDatepickerInputEvent } from '@angular/material';
@@ -16,7 +16,6 @@ import {
 })
 export class HomeComponent implements OnInit {
   private snapshots: TemperatureSensor[] = [];
-  events: string[] = [];
 
   private date: string[] = [];
   private temp: number[] = [];
@@ -36,7 +35,7 @@ export class HomeComponent implements OnInit {
         this.temp.push(y.temperature);
       });
 
-      this.refreshChart();
+      this.createChart();
     });
 
     this.hubConnection = new HubConnectionBuilder()
@@ -53,20 +52,24 @@ export class HomeComponent implements OnInit {
       .catch(err => console.log('Error while establishing connection: ' + err));
 
     this.hubConnection.on('roomUpdate', (msg: TemperatureSensor) => {
-      const text = `${msg.humidity} ${msg.temperature} ${msg.date}`;
-      this.events.push(text);
-      this.temp.push(msg.temperature);
-      this.date.push(msg.date.toLocaleString());
-
-      this.refreshChart();
+      const d = new Date(msg.date).toLocaleString();
+      this.addData(d, msg.temperature);
     });
   }
 
-  addEvent(event: MatDatepickerInputEvent<Date>) {
-    this.events.push(`${event.value}`);
+  addData(label, temp) {
+    if (this.temp.length > 36) {
+      this.temp.shift();
+      this.date.shift();
+    }
+
+    this.temp.push(temp);
+    this.date.push(label);
+
+    this.chart.update();
   }
 
-  refreshChart() {
+  createChart() {
     this.chart = new Chart('canvas', {
       type: 'line',
       data: {
@@ -82,6 +85,9 @@ export class HomeComponent implements OnInit {
       options: {
         legend: {
           display: false
+        },
+        animation: {
+          duration: 1000
         },
         scales: {
           xAxes: [

@@ -9,9 +9,11 @@ namespace WebServer.Hub
     public class RoomHub : Microsoft.AspNetCore.SignalR.Hub
     {
         public const string UpdateMessage = "roomUpdate";
-        public void SendToAll(TemperatureSensorSnapshot snapshot)
+
+        [Microsoft.AspNetCore.SignalR.HubMethodName("update")]
+        public void SendUpdate(TemperatureSensorSnapshot snapshot)
         {
-            Clients.All.SendCoreAsync(UpdateMessage, new[] { snapshot.ToString() } );
+            Clients.All.SendCoreAsync(UpdateMessage, new[] { snapshot });
         }
     }
 }

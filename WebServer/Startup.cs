@@ -69,10 +69,10 @@ namespace WebServer
             }
 
             app.UseCors("CorsPolicy");
-
+           
             app.UseSignalR(routes =>
             {
-                routes.MapHub<RoomHub>("/hub/room");
+                routes.MapHub<RoomHub>("/hub/room");                
             });
 
             //   app.UseHttpsRedirection();
