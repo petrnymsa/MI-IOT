@@ -1,10 +1,5 @@
-<h1>Room</h1>
-<div>
-  <canvas id="canvas">{{ chart }}</canvas>
-</div>
+<h1>Room - static</h1>
+<app-room></app-room>
 
-<mat-form-field>
-  <input matInput [matDatepicker]="picker" placeholder="Choose a date" />
-  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-  <mat-datepicker #picker onClo></mat-datepicker>
-</mat-form-field>
+<h2>Room - real time</h2>
+<app-real-time></app-real-time>

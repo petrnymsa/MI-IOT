@@ -14,9 +14,11 @@ import { ChartsModule } from 'ng2-charts';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
+import { RoomComponent } from './room/room.component';
+import { RealTimeComponent } from './real-time/real-time.component';
 
 @NgModule({
-  declarations: [AppComponent, NavMenuComponent, HomeComponent],
+  declarations: [AppComponent, NavMenuComponent, HomeComponent, RoomComponent, RealTimeComponent],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
