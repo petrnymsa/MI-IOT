@@ -519,3 +519,5 @@ MigrationBackup/
 ClientApp/.vscode/
 ClientApp/.angulardoc.json
 .angulardoc.json
+board/.vscode
+board/ArduinoOutput/

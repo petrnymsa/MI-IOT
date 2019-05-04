@@ -1,17 +1,20 @@
-#include "DHT.h"
+//#include "DHT.h"
 #include <Ethernet.h>
+//#include <arduinoduedht11.h>
+#include <dht.h>
+
 // ------ SERVER STUFF ---------------------
-#define SERVER_IP "192.168.0.129"
+#define SERVER_IP "10.0.0.149"
 #define SERVER_PORT 5000
-#define SERVER_IP_PORT "192.168.0.129:5000"
-#define API_DHT11 "/api/values"
+#define SERVER_IP_PORT "10.0.0.149:5000"
+#define API_DHT11 "/api/room"
 #define API_ESES "/api/flower"
 // ---------- PINS -------------------------
 #define DHTPIN 5
-#define LED_DHT11 6
-#define LED_ESES 7
-#define LED_WEB 8
-#define LED_OK 9
+#define LED_DHT11 47
+#define LED_ESES 49
+#define LED_WEB 51
+#define LED_OK 53
 
 #define PIN_ESES_D 3
 #define PIN_ESES_VCC 2
@@ -23,12 +26,17 @@
 #define ESES_THRESHOLD 600
 //-----------------------------------------
 // Device ethernet configuration
-const byte mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
-const byte ip[] = {192, 168, 0, 222};
+byte mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
+//const uint8_t ip[] = {10, 0, 0, 171};
+IPAddress ip(10, 0, 0, 171);
 EthernetClient client;
 
 // DHT11 Sensor
-DHT dht(DHTPIN, DHT11);
+//DHT dht(DHTPIN, DHT11);
+
+//dht11 dht11(DHTPIN); //PIN 2.
+
+dht DHT;
 
 unsigned long timer_dht11 = 0;
 unsigned long timer_eses = 0;
@@ -49,7 +57,8 @@ void setup()
     Serial.print(F("Assigned IP: "));
     Serial.println(Ethernet.localIP());
 
-    dht.begin();
+    pinMode(DHTPIN, INPUT);
+    //  dht.begin();
 
     pinMode(LED_OK, OUTPUT);
     pinMode(LED_WEB, OUTPUT);
@@ -65,6 +74,11 @@ void setup()
     delay(1000);
 
     Serial.println(F("INIT COMPLETE"));
+
+    digitalWrite(LED_OK, LOW);
+    digitalWrite(LED_DHT11, LOW);
+    digitalWrite(LED_WEB, LOW);
+    digitalWrite(LED_ESES, LOW);
 }
 
 void loop()
@@ -140,6 +154,13 @@ void set_leds()
     {
         digitalWrite(LED_OK, LOW);
 
+        // Serial.print(F("STATUS:"));
+        // Serial.print(status_sensor_dht11);
+        // Serial.print(" ");
+        // Serial.print(status_sensor_eses);
+        // Serial.print(" ");
+        // Serial.print(status_web);
+        // Serial.println(" ");
         if (!status_sensor_dht11)
             digitalWrite(LED_DHT11, HIGH);
         else
@@ -161,18 +182,35 @@ void set_leds()
 // ------------------------------------------------------------
 bool read_dht11(float *temp, float *hum)
 {
-    // Reading temperature or humidity takes about 250 milliseconds!
-    // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
-    float h = dht.readHumidity();
-    float t = dht.readTemperature();
-
-    if (isnan(h) || isnan(t))
+    // READ DATA
+    int chk = DHT.read11(DHTPIN);
+    // switch (chk)
+    // {
+    // case DHTLIB_OK:
+    //     Serial.print("OK,\t");
+    //     break;
+    // case DHTLIB_ERROR_CHECKSUM:
+    //     Serial.print("Checksum error,\t");
+    //     break;
+    // case DHTLIB_ERROR_TIMEOUT:
+    //     Serial.print("Time out error,\t");
+    //     break;
+    // default:
+    //     Serial.print("Unknown error,\t");
+    //     break;
+    // }
+    // DISPLAY DATA
+    // Serial.print(DHT.humidity, 1);
+    // Serial.print(",\t");
+    // Serial.println(DHT.temperature, 1);
+    if (chk != DHTLIB_OK)
     {
-        Serial.println(F("Failed to read from DHT sensor!"));
+        Serial.println(F("Can't read DHT11 data"));
         return false;
     }
-    *temp = t;
-    *hum = h;
+
+    *temp = DHT.temperature;
+    *hum = DHT.humidity / 100.0;
 
     return true;
 }
