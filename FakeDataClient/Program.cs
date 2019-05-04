@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace FakeDataClient
@@ -15,8 +16,27 @@ namespace FakeDataClient
 
         public override string ToString() => $"{Id};{Temperature};{Humidity};{Date}";
     }
+
+    public class HumiditySensorSnapshot
+    {
+        public int Id { get; set; }
+        public float Humidity { get; set; }
+
+        public DateTime Date { get; set; }
+
+        public override string ToString() => $"{Id};{Humidity};{Date}";
+
+    }
     class Program
     {
+
+        static void Print(string msg, ConsoleColor color)
+        {
+            var c = Console.ForegroundColor;
+            Console.ForegroundColor = color;
+            Console.WriteLine(msg);
+            Console.ForegroundColor = c;
+        }
         static async Task Main(string[] args)
         {
             //Set connection         
@@ -32,8 +52,13 @@ namespace FakeDataClient
             };            
 
             connection.On<TemperatureSensorSnapshot>("roomUpdate", (msg) =>
+            {            
+                Print($"Recieved: {msg}", ConsoleColor.Green);             
+            });
+
+            connection.On<TemperatureSensorSnapshot>("flowerUpdate", (msg) =>
             {
-                Console.WriteLine($"Recieved: {msg}");
+                Print($"Recieved: {msg}", ConsoleColor.Cyan);
             });
 
             try
@@ -45,24 +70,47 @@ namespace FakeDataClient
                 Console.WriteLine(ex);
             }
             Console.WriteLine("Connected");
-            Console.WriteLine("Press enter to generate random data");
-            Console.ReadKey();
-            while (true)
+
+            var roomTimer = new Timer((t) =>
             {
-                var hum = (float)rnd.NextDouble();
-                var temp = (float)(rnd.Next(21, 23) + rnd.NextDouble());
+                SendRoom(rnd, connection);
+            },null, TimeSpan.Zero, TimeSpan.FromMilliseconds(500));
 
-                var snapshot = new TemperatureSensorSnapshot()
-                {
-                    Temperature = temp,
-                    Humidity = hum,
-                    Date = DateTime.Now
-                };
-                Console.WriteLine($"Sending {snapshot}");
-                await connection.InvokeAsync<TemperatureSensorSnapshot>("update",snapshot);
+            var flowerTimer = new Timer((t) =>
+            {
+                SendFlower(rnd, connection);
+            }, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(2000));
 
-                await Task.Delay(TimeSpan.FromSeconds(1));
-            }
-        }    
+            Console.WriteLine("--- PRESS KEY TO EXIT ---");
+            Console.ReadKey();
+        }
+
+        private static async Task SendRoom(Random rnd, HubConnection connection)
+        {
+            var hum = (float)rnd.NextDouble();
+            var temp = (float)(rnd.Next(21, 23) + rnd.NextDouble());
+
+            var snapshot = new TemperatureSensorSnapshot()
+            {
+                Temperature = temp,
+                Humidity = hum,
+                Date = DateTime.Now
+            };
+           Print($"Sending {snapshot}", ConsoleColor.Blue);
+            await connection.InvokeAsync<TemperatureSensorSnapshot>("roomUpdate", snapshot);
+        }
+
+        private static async Task SendFlower(Random rnd, HubConnection connection)
+        {
+            var hum = (float)rnd.NextDouble();
+
+            var snapshot = new HumiditySensorSnapshot()
+            {
+                Humidity = hum,
+                Date = DateTime.Now
+            };
+            Print($"Sending {snapshot}", ConsoleColor.Magenta);
+            await connection.InvokeAsync<TemperatureSensorSnapshot>("flowerUpdate", snapshot);
+        }
     }
 }

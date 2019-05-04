@@ -17,15 +17,12 @@ export class RoomComponent implements OnInit {
 
   ngOnInit() {
     this.roomService.getAll().subscribe((res: TemperatureSensor[]) => {
-      console.log('length: ' + res.length);
-      res.forEach(y => {
-        const d = new Date(y.date).toLocaleString();
-        if (this.labels.length < 20) {
-          this.labels.push(d);
-          this.data.push(y.temperature);
-        }
+      const part = res.reverse().slice(0, 30);
+      part.forEach((p: TemperatureSensor) => {
+        this.labels.push(new Date(p.date).toLocaleString());
+        this.data.push(p.temperature);
       });
-      console.log('length: ' + this.labels.length);
+
       this.createChart();
     });
   }

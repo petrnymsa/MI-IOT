@@ -1,3 +1,4 @@
+import { RoomApiService } from '../services/room-api.service';
 import { Component, OnInit } from '@angular/core';
 import {
   HubConnectionBuilder,
@@ -9,30 +10,26 @@ import { Chart } from 'chart.js';
 
 @Component({
   selector: 'app-real-time',
-  templateUrl: './real-time.component.html',
-  styleUrls: ['./real-time.component.css']
+  templateUrl: './real-time-room.component.html',
+  styleUrls: ['./real-time-room.component.css']
 })
-export class RealTimeComponent implements OnInit {
+export class RealTimeRoomComponent implements OnInit {
   private readonly maxEntries = 30;
   private labels: string[] = [];
   private data_temp: number[] = [];
   private data_hum: number[] = [];
   chart: Chart;
+  actual_temp: number;
+  actual_hum: number;
 
   private hubConnection: signalR.HubConnection;
 
-  constructor() {}
+  constructor(private roomApi: RoomApiService) {}
 
   ngOnInit(): void {
     this.createChart();
 
-    this.hubConnection = new HubConnectionBuilder()
-      .configureLogging(LogLevel.Debug)
-      .withUrl('http://localhost:5000/hub/room', {
-        skipNegotiation: true,
-        transport: HttpTransportType.WebSockets
-      })
-      .build();
+    this.hubConnection = this.roomApi.getLiveConnection();
 
     this.hubConnection
       .start()
@@ -55,6 +52,9 @@ export class RealTimeComponent implements OnInit {
     this.data_temp.push(temp);
     this.data_hum.push(hum);
     this.labels.push(label);
+
+    this.actual_temp = temp;
+    this.actual_hum = hum;
 
     this.chart.update();
   }

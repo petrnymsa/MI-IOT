@@ -46,7 +46,8 @@ namespace WebServer.Controllers
                 var fromRes = _context.TemperatureSensorSnapshots.Where(x => x.Date.TruncateMilliseconds() >= from.Value).ToList();
                 return Ok(fromRes);
             }
-            else if (!from.HasValue)
+
+            if (!@from.HasValue)
             {
                 var endRes = _context.TemperatureSensorSnapshots.Where(x => x.Date.TruncateMilliseconds() <= end.Value).ToList();
                 return Ok(endRes);
@@ -65,7 +66,7 @@ namespace WebServer.Controllers
             await _context.TemperatureSensorSnapshots.AddAsync(snapshot);
             await _context.SaveChangesAsync();
 
-            await roomHub.Clients.All.SendAsync(RoomHub.UpdateMessage, snapshot);
+            await roomHub.Clients.All.SendAsync(RoomHub.RoomUpdate, snapshot);
 
             return Ok();
         }
