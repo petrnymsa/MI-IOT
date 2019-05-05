@@ -54,7 +54,7 @@ export class RealTimeRoomComponent implements OnInit {
     this.labels.push(label);
 
     this.actual_temp = temp;
-    this.actual_hum = hum;
+    this.actual_hum = hum * 100;
 
     this.chart.update();
   }

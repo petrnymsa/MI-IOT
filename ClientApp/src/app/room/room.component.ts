@@ -12,19 +12,23 @@ export class RoomComponent implements OnInit {
   private labels: string[] = [];
   private data: number[] = [];
   public chart: Chart;
+  public error: string;
 
   constructor(private roomService: RoomApiService) {}
 
   ngOnInit() {
-    this.roomService.getAll().subscribe((res: TemperatureSensor[]) => {
-      const part = res.reverse().slice(0, 30);
-      part.forEach((p: TemperatureSensor) => {
-        this.labels.push(new Date(p.date).toLocaleString());
-        this.data.push(p.temperature);
-      });
+    this.roomService.getAll().subscribe(
+      (res: TemperatureSensor[]) => {
+        const part = res.reverse().slice(0, 30);
+        part.forEach((p: TemperatureSensor) => {
+          this.labels.push(new Date(p.date).toLocaleString());
+          this.data.push(p.temperature);
+        });
 
-      this.createChart();
-    });
+        this.createChart();
+      },
+      error => (this.error = error.message)
+    ); // error path);
   }
 
   createChart() {

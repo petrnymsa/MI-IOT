@@ -16,6 +16,10 @@ namespace WebServer.Controllers
         private readonly ServerDbContext _context;
         private readonly IInputDataParser<HumiditySensorSnapshot> parser;
 
+        private int? _totalCount = null;
+        private int? _totalPages = null;
+        private const int DefaultPageSize = 20;
+
         public FlowerController(ServerDbContext context, IInputDataParser<HumiditySensorSnapshot> inputDataParser)
         {
             this._context = context;
@@ -23,10 +27,41 @@ namespace WebServer.Controllers
         }
 
         [HttpGet]
-        public List<HumiditySensorSnapshot> Get()
+        public IActionResult Get(int? page = 0, int? count = DefaultPageSize)
         {
-            return _context.HumiditySensorSnapshots.ToList();
-        }     
+            if (!page.HasValue)
+                return Ok(_context.HumiditySensorSnapshots.ToList());
+
+            var totalItemsCount = GetTotalItemsCount();
+
+            return Ok(_context.HumiditySensorSnapshots.ToList());
+        }
+
+        private int GetTotalItemsCount()
+        {
+            if (_totalCount.HasValue)
+                return _totalCount.Value;
+
+            RefreshPagingInfo();
+
+            return _totalCount.Value;
+        }
+
+        private int GetTotalPages()
+        {
+            if (_totalPages.HasValue)
+                return _totalPages.Value;
+
+            RefreshPagingInfo();
+
+            return _totalPages.Value;
+        }
+
+        private void RefreshPagingInfo()
+        {
+            _totalCount = _context.HumiditySensorSnapshots.Count();
+            _totalPages = _totalCount / DefaultPageSize;
+        }
 
         [HttpPost]
         public async Task<ActionResult> Add()

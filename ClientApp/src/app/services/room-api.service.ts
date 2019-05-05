@@ -12,7 +12,7 @@ import {
   providedIn: 'root'
 })
 export class RoomApiService {
-  private baseUrl = 'http://localhost:5000';
+  private baseUrl = 'http://10.0.0.149:5000';
   constructor(private http: HttpClient) {}
 
   getAll() {

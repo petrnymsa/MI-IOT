@@ -32,34 +32,6 @@ namespace WebServer
             var ip = GetLocalIPAddress();
             var host  = CreateWebHostBuilder(args, ip).Build();
 
-
-            // use this to allow command line parameters in the config
-            //var configuration = new ConfigurationBuilder()
-            //    .AddCommandLine(args)
-            //    .Build();
-
-
-            //   var hostUrl = configuration["hosturl"];
-            //   if (string.IsNullOrEmpty(hostUrl))
-            //     hostUrl = "http://0.0.0.0:6000";
-
-
-            //var host = new WebHostBuilder()
-            //    .UseKestrel()
-            //    .UseUrls("http://localhost:5000", $"http://{ip}:5000")   // <!-- this 
-            //    .UseContentRoot(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location))
-            //    .UseIISIntegration()
-            //    .UseStartup<Startup>()
-            //    .ConfigureLogging((hostingContext, logging) =>
-            //    {
-            //        logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
-            //        logging.AddConsole();
-            //        logging.AddDebug();
-            //        logging.AddEventSourceLogger();
-            //    })
-            //    .UseConfiguration(configuration)
-            //    .Build();
-
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
@@ -78,9 +50,9 @@ namespace WebServer
             host.Run();
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args, string ipAdress = "") =>
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args, string ipAdress = "", int port = 5000) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseUrls("http://localhost:5000", $"http://{ipAdress}:5000")
+                .UseUrls($"http://localhost:{port}", $"http://{ipAdress}:{port}")
                 .UseStartup<Startup>();
 
         public static string GetLocalIPAddress()
