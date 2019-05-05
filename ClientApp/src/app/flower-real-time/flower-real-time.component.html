@@ -1,0 +1,13 @@
+<div>
+  <p>Aktuální vlhkost: {{ actual_hum }}</p>
+  <p
+    class="alert"
+    [class.alert-success]="isOk"
+    [class.alert-danger]="isOk == false"
+  >
+    {{ status }}
+  </p>
+  <div>
+    <canvas id="real-time-flower-canvas">{{ chart }}</canvas>
+  </div>
+</div>

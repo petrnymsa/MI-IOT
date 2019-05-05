@@ -19,6 +19,8 @@ import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { RoomComponent } from './room/room.component';
 import { RealTimeRoomComponent } from './real-time-room/real-time-room.component';
 import { SettingsComponent } from './settings/settings.component';
+import { FlowerComponent } from './flower/flower.component';
+import { FlowerRealTimeComponent } from './flower-real-time/flower-real-time.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,9 @@ import { SettingsComponent } from './settings/settings.component';
     HomeComponent,
     RoomComponent,
     RealTimeRoomComponent,
-    SettingsComponent
+    SettingsComponent,
+    FlowerComponent,
+    FlowerRealTimeComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

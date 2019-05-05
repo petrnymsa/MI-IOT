@@ -1,16 +1,15 @@
-import { DateFormatPipe } from './../util/DateFormatter';
-import { TemperatureSensor } from './../data/TemperatureSensor';
-import { RoomApiService } from './../services/room-api.service';
+import { EsesSensor } from './../data/EsesSensor';
+import { FlowerApiService } from './../services/flower-api.service';
 import { Component, OnInit } from '@angular/core';
-import { Chart } from 'chart.js';
+import { DateFormatPipe } from '../util/DateFormatter';
+import Chart from 'chart.js';
 
 @Component({
-  selector: 'app-room',
-  templateUrl: './room.component.html'
+  selector: 'app-flower',
+  templateUrl: './flower.component.html'
 })
-export class RoomComponent implements OnInit {
+export class FlowerComponent implements OnInit {
   private labels: string[] = [];
-  private dataTemp: number[] = [];
   private dataHum: number[] = [];
   public chart: Chart;
   public error: string;
@@ -18,7 +17,7 @@ export class RoomComponent implements OnInit {
   lastRefresh: string;
 
   constructor(
-    private roomService: RoomApiService,
+    private api: FlowerApiService,
     private dateFormatPipe: DateFormatPipe
   ) {}
 
@@ -29,15 +28,13 @@ export class RoomComponent implements OnInit {
 
   refresh() {
     this.labels.length = 0;
-    this.dataTemp.length = 0;
     this.dataHum.length = 0;
-    this.roomService.getLast(this.count).subscribe(
-      (res: TemperatureSensor[]) => {
+    this.api.getLast(this.count).subscribe(
+      (res: EsesSensor[]) => {
         //const part = res.reverse().slice(0, 30);
-        res.forEach((p: TemperatureSensor) => {
+        res.forEach((p: EsesSensor) => {
           const date = this.dateFormatPipe.transform(p.date);
           this.labels.push(date);
-          this.dataTemp.push(p.temperature);
           this.dataHum.push(p.humidity);
         });
         console.log(res.length);
@@ -49,23 +46,16 @@ export class RoomComponent implements OnInit {
   }
 
   createChart() {
-    this.chart = new Chart('roomCanvas', {
+    this.chart = new Chart('flowerCanvas', {
       type: 'line',
       data: {
         labels: this.labels,
         datasets: [
           {
-            data: this.dataTemp,
+            data: this.dataHum,
             borderColor: '#3cba9f',
             yAxisID: 'A',
-            label: 'Teplota',
-            fill: false
-          },
-          {
-            data: this.dataHum,
-            yAxisID: 'B',
             label: 'Vlhkost',
-            borderColor: '#eb5511',
             fill: false
           }
         ]
@@ -88,15 +78,6 @@ export class RoomComponent implements OnInit {
               id: 'A',
               type: 'linear',
               position: 'left'
-            },
-            {
-              id: 'B',
-              type: 'linear',
-              position: 'right',
-              ticks: {
-                max: 1,
-                min: 0
-              }
             }
           ]
         }

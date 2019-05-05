@@ -11,7 +11,7 @@ using WebServer.Models;
 
 namespace WebServer.Controllers
 {
-    [Route("api/[controller]")]
+   // [Route("api/[controller]")]
     [ApiController]
     public class RoomController : ControllerBase
     {
@@ -26,7 +26,7 @@ namespace WebServer.Controllers
             this.roomHub = roomHub;
         }
 
-        [HttpGet]
+        [HttpGet("api/[controller]")]
         public ActionResult<List<HumiditySensorSnapshot>> GetWithinInterval(DateTime? from, DateTime? end)
         {
             from = from.TruncateMilliseconds();
@@ -51,7 +51,15 @@ namespace WebServer.Controllers
             return Ok(res);
         }
 
-        [HttpPost]
+        [HttpGet]
+        [Route("api/[controller]/last/{count}")]
+        public ActionResult<List<HumiditySensorSnapshot>> GetLast(int count)
+        {
+            var last = _context.TemperatureSensorSnapshots.Skip(_context.TemperatureSensorSnapshots.Count() - count).ToList();
+            return Ok(last);
+        }
+
+        [HttpPost("api/[controller]")]
         public async Task<ActionResult> Add()
         {
             var raw = await Request.GetRawBodyStringAsync();

@@ -25,6 +25,10 @@ export class RoomApiService {
     return this.http.get('/api/room?from=' + fromStr);
   }
 
+  getLast(count: number) {
+    return this.http.get('/api/room/last/' + count);
+  }
+  //TODO merge it to standalone HubService
   getLiveConnection(): HubConnection {
     const hubConnection = new HubConnectionBuilder()
       .configureLogging(LogLevel.Debug)

@@ -18,4 +18,21 @@ export class FlowerApiService {
   getAll() {
     return this.http.get('/api/flower');
   }
+
+  getLast(count: number) {
+    return this.http.get('/api/flower?count=' + count);
+  }
+
+  //TODO merge it to standalone HubService
+  getLiveConnection(): HubConnection {
+    const hubConnection = new HubConnectionBuilder()
+      .configureLogging(LogLevel.Debug)
+      .withUrl('/hub/room', {
+        skipNegotiation: true,
+        transport: HttpTransportType.WebSockets
+      })
+      .build();
+
+    return hubConnection;
+  }
 }

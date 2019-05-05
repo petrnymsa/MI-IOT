@@ -1,18 +1,12 @@
 import { RoomApiService } from '../services/room-api.service';
 import { Component, OnInit } from '@angular/core';
-import {
-  HubConnectionBuilder,
-  LogLevel,
-  HttpTransportType
-} from '@aspnet/signalr';
 import { TemperatureSensor } from '../data/TemperatureSensor';
 import { Chart } from 'chart.js';
 import { DateFormatPipe } from '../util/DateFormatter';
 
 @Component({
   selector: 'app-real-time',
-  templateUrl: './real-time-room.component.html',
-  styleUrls: ['./real-time-room.component.css']
+  templateUrl: './real-time-room.component.html'
 })
 export class RealTimeRoomComponent implements OnInit {
   private readonly maxEntries = 30;
@@ -32,6 +26,20 @@ export class RealTimeRoomComponent implements OnInit {
 
   ngOnInit(): void {
     this.createChart();
+
+    this.roomApi
+      .getLast(this.maxEntries)
+      .subscribe((res: TemperatureSensor[]) => {
+        //const part = res.reverse().slice(0, 30);
+        res.forEach((p: TemperatureSensor) => {
+          const date = this.dateFormatPipe.transform(p.date);
+          this.labels.push(date);
+          this.data_temp.push(p.temperature);
+          this.data_hum.push(p.humidity);
+        });
+        console.log(res.length);
+        this.chart.update();
+      }); // error path);
 
     this.hubConnection = this.roomApi.getLiveConnection();
 
@@ -73,13 +81,13 @@ export class RealTimeRoomComponent implements OnInit {
             data: this.data_temp,
             borderColor: '#3cba9f',
             yAxisID: 'A',
-            label: 'Temperature',
+            label: 'Teplota',
             fill: false
           },
           {
             data: this.data_hum,
             yAxisID: 'B',
-            label: 'Humidity',
+            label: 'Vlhkost',
             borderColor: '#eb5511',
             fill: false
           }
