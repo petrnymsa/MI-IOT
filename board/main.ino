@@ -2,6 +2,7 @@
 #include <Ethernet.h>
 //#include <arduinoduedht11.h>
 #include <dht.h>
+#include <ArduinoHttpClient.h>
 
 // ------ SERVER STUFF ---------------------
 #define SERVER_IP "10.0.0.149"
@@ -20,26 +21,30 @@
 #define PIN_ESES_VCC 2
 #define PIN_ESES_ANALOG A0
 // -------- TIME INTERVALS -----------
-#define INTERVAL_DHT11 5000 // each 3 seconds
-#define INTERVAL_ESES 10000 // each 6 seconds
+#define INTERVAL_DEFAULT_DHT11 900000 // each 15 minutes
+#define INTERVAL_DEFAULT_ESES 1800000 // each 30 minutes
+#define INTERVAL_SETTINGS 5000        // each 5 seconds
 // -----------------------------------------
-#define ESES_THRESHOLD 600
+#define ESES_THRESHOLD 600 // when over, start water
+#define ESES_LOW 250       // minimum - stop water //TODO
 //-----------------------------------------
 // Device ethernet configuration
 byte mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
-//const uint8_t ip[] = {10, 0, 0, 171};
 IPAddress ip(10, 0, 0, 171);
-EthernetClient client;
+
+EthernetClient ethernetClient;
+HttpClient httpClient = HttpClient(ethernetClient, SERVER_IP, SERVER_PORT);
 
 // DHT11 Sensor
-//DHT dht(DHTPIN, DHT11);
-
-//dht11 dht11(DHTPIN); //PIN 2.
-
 dht DHT;
+
+int interval_dht11 = 0;
+int interval_eses = 0;
 
 unsigned long timer_dht11 = 0;
 unsigned long timer_eses = 0;
+unsigned long timer_settings = 0;
+
 byte readFailedCount = 0;
 
 bool status_sensor_dht11 = true;
@@ -69,20 +74,31 @@ void setup()
     pinMode(PIN_ESES_ANALOG, INPUT);
     pinMode(PIN_ESES_D, INPUT);
     pinMode(PIN_ESES_VCC, OUTPUT);
+
     digitalWrite(PIN_ESES_VCC, LOW);
-
-    delay(1000);
-
-    Serial.println(F("INIT COMPLETE"));
 
     digitalWrite(LED_OK, LOW);
     digitalWrite(LED_DHT11, LOW);
     digitalWrite(LED_WEB, LOW);
     digitalWrite(LED_ESES, LOW);
+
+    interval_dht11 = INTERVAL_DEFAULT_DHT11;
+    interval_eses = INTERVAL_DEFAULT_ESES;
+
+    delay(1000);
+    http_get_settings(&interval_dht11, &interval_eses);
+    Serial.println(F("INIT COMPLETE"));
 }
 
 void loop()
 {
+
+    if (millis() - timer_settings > INTERVAL_SETTINGS)
+    {
+        timer_settings = millis();
+        http_get_settings(&interval_dht11, &interval_eses);
+    }
+
     set_leds();
 
     float room_temp = 0;
@@ -93,7 +109,7 @@ void loop()
     bool dht11_read = false;
     // pokud je rozdíl mezi aktuálním časem a posledním
     // uloženým větší než 3000 ms, proveď měření
-    if (millis() - timer_eses > INTERVAL_ESES)
+    if (millis() - timer_eses > interval_eses)
     {
         Serial.print(F("ESES: "));
         read_eses(&eses_analog);
@@ -108,7 +124,7 @@ void loop()
         Serial.println(eses_analog);
     }
 
-    if (millis() - timer_dht11 > INTERVAL_DHT11)
+    if (millis() - timer_dht11 > interval_dht11)
     {
         timer_dht11 = millis();
         Serial.print(F("DHT11: "));
@@ -184,25 +200,7 @@ bool read_dht11(float *temp, float *hum)
 {
     // READ DATA
     int chk = DHT.read11(DHTPIN);
-    // switch (chk)
-    // {
-    // case DHTLIB_OK:
-    //     Serial.print("OK,\t");
-    //     break;
-    // case DHTLIB_ERROR_CHECKSUM:
-    //     Serial.print("Checksum error,\t");
-    //     break;
-    // case DHTLIB_ERROR_TIMEOUT:
-    //     Serial.print("Time out error,\t");
-    //     break;
-    // default:
-    //     Serial.print("Unknown error,\t");
-    //     break;
-    // }
-    // DISPLAY DATA
-    // Serial.print(DHT.humidity, 1);
-    // Serial.print(",\t");
-    // Serial.println(DHT.temperature, 1);
+
     if (chk != DHTLIB_OK)
     {
         Serial.println(F("Can't read DHT11 data"));
@@ -245,31 +243,48 @@ void send_eses_data(const float &value)
 
 void http_post(const String &data, const char *endpoint)
 {
-    Serial.println(F("HTTP: Post request in process..."));
+    String contentType = "application/text";
 
-    if (client.connect(SERVER_IP, SERVER_PORT))
+    httpClient.post(endpoint, contentType, data);
+
+    int statusCode = httpClient.responseStatusCode();
+    String response = httpClient.responseBody();
+
+    if (statusCode == 200)
     {
         status_web = true;
-
-        client.print("POST ");
-        client.print(endpoint);
-        client.println(" HTTP/1.1");
-        client.print("Host: ");
-        client.println(SERVER_IP_PORT);
-        client.println("Connection: close");
-        client.println("Content-Type: text/plain");
-        client.print("Content-Length: ");
-        client.println(data.length());
-        client.println(""); //-------  I missed  ""
-
-        client.print(data);
-
-        //TODO check returned status code
     }
     else
     {
-        Serial.println(F("ERROR: Can’t reach the server"));
+        Serial.print(F("Can't post data."));
         status_web = false;
     }
-    client.stop();
+}
+
+bool http_get_settings(int *dht11Interval, int *esesInterval)
+{
+    httpClient.get("/api/settings/plain");
+    int statusCode = httpClient.responseStatusCode();
+    String response = httpClient.responseBody();
+    int id;
+
+    if (statusCode == 200)
+    {
+        sscanf(response.c_str(), "%d;%d;%d", &id, dht11Interval, esesInterval);
+        *dht11Interval = *dht11Interval * 1000;
+        *esesInterval = *esesInterval * 1000;
+
+        Serial.print(F("Settings: DHT11="));
+        Serial.print(*dht11Interval);
+        Serial.print(F(" ,ESES="));
+        Serial.println(*esesInterval);
+        return true;
+    }
+    else
+    {
+        Serial.print(F("Can't get settings. Will try again at"));
+        Serial.print(INTERVAL_SETTINGS);
+        Serial.println(F(" seconds"));
+        return false;
+    }
 }
