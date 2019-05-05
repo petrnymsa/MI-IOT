@@ -39,7 +39,15 @@ namespace WebServer.Data
 
             context.HumiditySensorSnapshots.AddRange(humSnapshots);
             context.SaveChanges();
-           
+
+            context.Settings.Add(new Settings()
+            {
+                DHT11Interval = Settings.DefaultDHT11Interval,
+                EsesInterval = Settings.DefaultEsesInterval
+            });
+
+            context.SaveChanges();
+
         }
     }
 }

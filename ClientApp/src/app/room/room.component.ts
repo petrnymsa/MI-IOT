@@ -1,3 +1,4 @@
+import { DateFormatPipe } from './../util/DateFormatter';
 import { TemperatureSensor } from './../data/TemperatureSensor';
 import { RoomApiService } from './../services/room-api.service';
 import { Component, OnInit } from '@angular/core';
@@ -14,14 +15,18 @@ export class RoomComponent implements OnInit {
   public chart: Chart;
   public error: string;
 
-  constructor(private roomService: RoomApiService) {}
+  constructor(
+    private roomService: RoomApiService,
+    private dateFormatPipe: DateFormatPipe
+  ) {}
 
   ngOnInit() {
     this.roomService.getAll().subscribe(
       (res: TemperatureSensor[]) => {
         const part = res.reverse().slice(0, 30);
         part.forEach((p: TemperatureSensor) => {
-          this.labels.push(new Date(p.date).toLocaleString());
+          const date = this.dateFormatPipe.transform(p.date);
+          this.labels.push(date);
           this.data.push(p.temperature);
         });
 

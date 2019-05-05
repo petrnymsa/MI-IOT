@@ -7,6 +7,7 @@ import {
 } from '@aspnet/signalr';
 import { TemperatureSensor } from '../data/TemperatureSensor';
 import { Chart } from 'chart.js';
+import { DateFormatPipe } from '../util/DateFormatter';
 
 @Component({
   selector: 'app-real-time',
@@ -24,7 +25,10 @@ export class RealTimeRoomComponent implements OnInit {
 
   private hubConnection: signalR.HubConnection;
 
-  constructor(private roomApi: RoomApiService) {}
+  constructor(
+    private roomApi: RoomApiService,
+    private dateFormatPipe: DateFormatPipe
+  ) {}
 
   ngOnInit(): void {
     this.createChart();
@@ -37,8 +41,8 @@ export class RealTimeRoomComponent implements OnInit {
       .catch(err => console.log('Error while establishing connection: ' + err));
 
     this.hubConnection.on('roomUpdate', (msg: TemperatureSensor) => {
-      const d = new Date(msg.date).toLocaleString();
-      this.addData(d, msg.temperature, msg.humidity);
+      const date = this.dateFormatPipe.transform(msg.date);
+      this.addData(date, msg.temperature, msg.humidity);
     });
   }
 

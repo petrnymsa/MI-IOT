@@ -26,12 +26,6 @@ namespace WebServer.Controllers
             this.roomHub = roomHub;
         }
 
-        //[HttpGet]
-        //public List<TemperatureSensorSnapshot> Get()
-        //{
-        //    return _context.TemperatureSensorSnapshots.ToList();
-        //}
-
         [HttpGet]
         public ActionResult<List<HumiditySensorSnapshot>> GetWithinInterval(DateTime? from, DateTime? end)
         {

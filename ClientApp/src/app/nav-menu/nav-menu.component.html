@@ -3,7 +3,7 @@
     class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3"
   >
     <div class="container">
-      <a class="navbar-brand" [routerLink]="['/']">ArduinoWeb</a>
+      <a class="navbar-brand" [routerLink]="['/']">MI-IOT</a>
       <button
         class="navbar-toggler"
         type="button"
@@ -25,8 +25,19 @@
             [routerLinkActive]="['link-active']"
             [routerLinkActiveOptions]="{ exact: true }"
           >
-            <a class="nav-link text-dark" [routerLink]="['/']">Room</a>
+            <a class="nav-link text-dark" [routerLink]="['/']">Pokoj</a>
           </li>
+
+          <li
+            class="nav-item"
+            [routerLinkActive]="['link-active']"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            <a class="nav-link text-dark" [routerLink]="['/settings']"
+              >Nastavení</a
+            >
+          </li>
+
           <!--
           <li class="nav-item" [routerLinkActive]='["link-active"]'>
             <a class="nav-link text-dark" [routerLink]='["/counter"]'>Counter</a>

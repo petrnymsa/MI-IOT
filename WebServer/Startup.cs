@@ -33,7 +33,9 @@ namespace WebServer
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy",
-                    builder => builder.WithOrigins("http://localhost:5000", "http://10.0.0.149:5000")
+                    builder => 
+                        //("http://localhost:5000", "http://10.0.0.149:5000")
+                        builder.AllowAnyOrigin()
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials());
@@ -43,8 +45,9 @@ namespace WebServer
 
             //configure EF
             var connectionString = Configuration.GetConnectionString("DefaultConnection");
+
             services.AddDbContext<ServerDbContext>(options =>
-                options.UseSqlServer(connectionString));
+                options.UseSqlServer(connectionString, x => x.MigrationsAssembly("WebServer")));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
@@ -107,7 +110,7 @@ namespace WebServer
 
                 if (env.IsDevelopment())
                 {
-                    spa.UseAngularCliServer(npmScript: "start");
+                   spa.UseAngularCliServer(npmScript: "start");
                 }
             });
         }

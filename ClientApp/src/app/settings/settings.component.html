@@ -1,0 +1,39 @@
+<div class="container">
+  <div class="row" *ngIf="showMsg">
+    <div class="col-xs-12">
+      <p class="alert alert-success">
+        <strong>Nastaveno</strong> DHT11: {{ settings.dhT11Interval }}, ESES:
+        {{ settings.esesInterval }}
+      </p>
+    </div>
+  </div>
+
+  <form>
+    <div class="form-group">
+      <label for="dht11intervalinput">DHT11 Interval (s)</label>
+      <input
+        [(ngModel)]="settings.dhT11Interval"
+        #dht11intervalbox
+        type="number"
+        name="dht11interval"
+        class="form-control"
+        id="dht11intervalinput"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="esesintervalinput">Eses Interval (s)</label>
+      <input
+        name="esesinterval"
+        #esesintervalbox
+        [(ngModel)]="settings.esesInterval"
+        type="number"
+        class="form-control"
+        id="esesintervalinput"
+        required
+      />
+    </div>
+    <button class="btn btn-success" (click)="handleSubmit()">Uložit</button>
+    <button class="btn btn-danger m-2">Reset</button>
+  </form>
+</div>
