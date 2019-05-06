@@ -19,10 +19,6 @@ namespace WebServer.Controllers
         private readonly IInputDataParser<HumiditySensorSnapshot> parser;
         private readonly IHubContext<RoomHub> roomHub;
 
-        private int? _totalCount = null;
-        private int? _totalPages = null;
-        private const int DefaultPageSize = 20;
-
         public FlowerController(ServerDbContext context, IInputDataParser<HumiditySensorSnapshot> inputDataParser, IHubContext<RoomHub> roomHub)
         {
             this._context = context;
@@ -51,43 +47,6 @@ namespace WebServer.Controllers
 
             return Ok();
         }
-
-        //[HttpGet]
-        //public IActionResult Get(int? page = 0, int? count = DefaultPageSize)
-        //{
-        //    if (!page.HasValue)
-        //        return Ok(_context.HumiditySensorSnapshots.ToList());
-
-        //    var totalItemsCount = GetTotalItemsCount();
-
-        //    return Ok(_context.HumiditySensorSnapshots.ToList());
-        //}
-
-        //private int GetTotalItemsCount()
-        //{
-        //    if (_totalCount.HasValue)
-        //        return _totalCount.Value;
-
-        //    RefreshPagingInfo();
-
-        //    return _totalCount.Value;
-        //}
-
-        //private int GetTotalPages()
-        //{
-        //    if (_totalPages.HasValue)
-        //        return _totalPages.Value;
-
-        //    RefreshPagingInfo();
-
-        //    return _totalPages.Value;
-        //}
-
-        //private void RefreshPagingInfo()
-        //{
-        //    _totalCount = _context.HumiditySensorSnapshots.Count();
-        //    _totalPages = _totalCount / DefaultPageSize;
-        //}
     }
 }
 
