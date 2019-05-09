@@ -1,7 +1,7 @@
 import { FlowerApiService } from './../services/flower-api.service';
 import { EsesSensor } from './../data/EsesSensor';
 import { Component, OnInit } from '@angular/core';
-import Chart from 'chart.js';
+import { Chart } from 'chart.js';
 import { DateFormatPipe } from '../util/DateFormatter';
 
 @Component({
@@ -24,7 +24,7 @@ export class FlowerRealTimeComponent implements OnInit {
   constructor(
     private api: FlowerApiService,
     private dateFormatPipe: DateFormatPipe
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.createChart();

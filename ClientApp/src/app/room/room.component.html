@@ -1,12 +1,90 @@
 <div class="container">
-  <div>
-    <p>{{ error }}</p>
-    <p>Posledních {{ count }} záznamů</p>
-    <p>Naposled aktualizováno {{ lastRefresh }}</p>
-    <button class="btn btn-primary btn-sm m-2" (click)="refresh()">
-      Obnovit
-    </button>
-  </div>
+
+
+  <p *ngIf="error">
+    <ngb-alert [dismissible]="false" [type]="'danger'">
+      <strong>Chyba!</strong> {{error}}
+    </ngb-alert>
+  </p>
+  <!-- <p>Posledních {{ count }} záznamů</p> -->
+  <p>Naposled aktualizováno {{ lastRefresh }}</p>
+  <p>Celkem záznamů {{ labels.length}}</p>
+
+
+
+  <form>
+    <div class="form-row">
+      <div class="col">
+        <div class="form-group">
+          <label>Start</label>
+          <div class="input-group">
+            <input class="form-control" placeholder="yyyy-mm-dd" name="dp1" [(ngModel)]="dateStart" ngbDatepicker
+              #d1="ngbDatepicker">
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary calendar" (click)="d1.toggle()" type="button"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <ngb-timepicker name="t1" [(ngModel)]="timeStart" [seconds]="'true'"></ngb-timepicker>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="col">
+        <div class="form-group">
+          <label>End</label>
+          <div class="input-group">
+            <input class="form-control" placeholder="yyyy-mm-dd" name="dp2" [(ngModel)]="dateEnd" ngbDatepicker
+              #d2="ngbDatepicker">
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary calendar" (click)="d2.toggle()" type="button"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <ngb-timepicker name="t2" [(ngModel)]="timeEnd" [seconds]="'true'"></ngb-timepicker>
+      </div>
+    </div>
+
+    <div class="form-row form-inline">
+      <button class="btn btn-success m-2" (click)="refreshSpecificDate()">
+        Potvrdit
+      </button>
+
+      <button class="btn btn-secondary btn-sm m-2" (click)="refreshLast()">
+        Posledních 25 záznamů
+      </button>
+    </div>
+
+
+    <!-- <div class="form-group" *ngIf="dateStart && dateEnd">
+          <div class="input-group">
+            <ngb-timepicker name="t1" [(ngModel)]="time" [seconds]="'true'"></ngb-timepicker>
+          </div>
+
+          <div class="input-group">
+            <ngb-timepicker name="t2" [(ngModel)]="time" [seconds]="'true'"></ngb-timepicker>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <button class="btn btn-primary btn-sm m-2" (click)="refresh()">
+            FOOOO
+          </button>
+        </div>
+
+        <div class="form-group">
+          <button class="btn btn-primary btn-sm m-2" (click)="refresh()">
+            Potvrdit
+          </button>
+        </div> -->
+  </form>
+
 
   <div class="row">
     <canvas id="roomCanvas">{{ chart }}</canvas>

@@ -2,7 +2,7 @@ import { EsesSensor } from './../data/EsesSensor';
 import { FlowerApiService } from './../services/flower-api.service';
 import { Component, OnInit } from '@angular/core';
 import { DateFormatPipe } from '../util/DateFormatter';
-import Chart from 'chart.js';
+import { Chart } from 'chart.js';
 
 @Component({
   selector: 'app-flower',
@@ -19,7 +19,7 @@ export class FlowerComponent implements OnInit {
   constructor(
     private api: FlowerApiService,
     private dateFormatPipe: DateFormatPipe
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.createChart();
@@ -42,7 +42,7 @@ export class FlowerComponent implements OnInit {
         this.lastRefresh = new Date().toLocaleString();
       },
       error => (this.error = error.message)
-    ); // error path);
+    );
   }
 
   createChart() {

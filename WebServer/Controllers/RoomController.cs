@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -11,7 +12,7 @@ using WebServer.Models;
 
 namespace WebServer.Controllers
 {
-   // [Route("api/[controller]")]
+    // [Route("api/[controller]")]
     [ApiController]
     public class RoomController : ControllerBase
     {
@@ -36,7 +37,7 @@ namespace WebServer.Controllers
                 return Ok(_context.TemperatureSensorSnapshots.ToList());
 
             if (!end.HasValue)
-            {               
+            {
                 var fromRes = _context.TemperatureSensorSnapshots.Where(x => x.Date.TruncateMilliseconds() >= from.Value).ToList();
                 return Ok(fromRes);
             }
@@ -53,7 +54,7 @@ namespace WebServer.Controllers
 
         [HttpGet]
         [Route("api/[controller]/last/{count}")]
-        public ActionResult<List<HumiditySensorSnapshot>> GetLast(int count)
+        public ActionResult<List<TemperatureSensorSnapshot>> GetLast(int count)
         {
             var last = _context.TemperatureSensorSnapshots.Skip(_context.TemperatureSensorSnapshots.Count() - count).ToList();
             return Ok(last);

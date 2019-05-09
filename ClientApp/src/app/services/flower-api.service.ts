@@ -13,7 +13,7 @@ import {
 })
 export class FlowerApiService {
   // private baseUrl = 'http://10.0.0.149:5000';
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getAll() {
     return this.http.get('/api/flower');
@@ -26,7 +26,7 @@ export class FlowerApiService {
   //TODO merge it to standalone HubService
   getLiveConnection(): HubConnection {
     const hubConnection = new HubConnectionBuilder()
-      .configureLogging(LogLevel.Debug)
+      .configureLogging(LogLevel.Error)
       .withUrl('/hub/room', {
         skipNegotiation: true,
         transport: HttpTransportType.WebSockets

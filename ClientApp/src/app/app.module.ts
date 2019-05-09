@@ -21,6 +21,8 @@ import { RealTimeRoomComponent } from './real-time-room/real-time-room.component
 import { SettingsComponent } from './settings/settings.component';
 import { FlowerComponent } from './flower/flower.component';
 import { FlowerRealTimeComponent } from './flower-real-time/flower-real-time.component';
+import { NgbModule, NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDateCustomParserFormatter } from './util/NgDateCustomParseFormatter';
 
 @NgModule({
   declarations: [
@@ -46,9 +48,10 @@ import { FlowerRealTimeComponent } from './flower-real-time/flower-real-time.com
     MatInputModule,
     MatNativeDateModule,
     ReactiveFormsModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    NgbModule
   ],
-  providers: [DateFormatPipe],
+  providers: [DateFormatPipe, { provide: NgbDateParserFormatter, useClass: NgbDateCustomParserFormatter }],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }
