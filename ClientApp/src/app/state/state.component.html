@@ -1,7 +1,9 @@
-<div class="status-box">
-  <span>Status: </span>
-  <div class="circle" [class.circle-gray]="!status" [class.circle-red]="status === 'gone'"
-    [class.circle-orange]="status === 'failing'" [class.circle-green]="status === 'alive'">
-
+<div>
+  <div class="status-box">
+    <span>Status: </span>
+    <div class="circle" [class.circle-gray]="!status" [class.circle-red]="status === 'gone'"
+      [class.circle-orange]="status === 'failing'" [class.circle-green]="status === 'alive'">
+    </div>
   </div>
+  <p class="last-update">Aktualizace: {{lastUpdate}}</p>
 </div>

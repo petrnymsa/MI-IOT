@@ -10,18 +10,24 @@ import { Component, OnInit } from '@angular/core';
 export class StateComponent implements OnInit {
 
   status;
+  lastUpdate;
 
   constructor(private hubService: HubService, private statusApi: StatusApiService) { }
 
   ngOnInit() {
 
     this.statusApi.getStatus().subscribe((res: string) => {
-      this.status = res.toLowerCase();
+      this.refresh(res);
     });
 
     this.hubService.getConnection().on('statusUpdate', (msg: string) => {
-      this.status = msg.toLowerCase();
+      this.refresh(msg);
     });
+  }
+
+  refresh(res: string) {
+    this.status = res.toLowerCase();
+    this.lastUpdate = new Date().toLocaleTimeString();
   }
 
 }
