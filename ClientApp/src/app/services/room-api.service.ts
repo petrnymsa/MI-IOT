@@ -44,16 +44,16 @@ export class RoomApiService {
   getLast(count: number) {
     return this.http.get('/api/room/last/' + count);
   }
-  //TODO merge it to standalone HubService
-  getLiveConnection(): HubConnection {
-    const hubConnection = new HubConnectionBuilder()
-      .configureLogging(LogLevel.Error)
-      .withUrl('/hub/room', {
-        skipNegotiation: true,
-        transport: HttpTransportType.WebSockets
-      })
-      .build();
+  // TODO merge it to standalone HubService
+  // getLiveConnection(): HubConnection {
+  //   const hubConnection = new HubConnectionBuilder()
+  //     .configureLogging(LogLevel.Error)
+  //     .withUrl('/hub/room', {
+  //       skipNegotiation: true,
+  //       transport: HttpTransportType.WebSockets
+  //     })
+  //     .build();
 
-    return hubConnection;
-  }
+  //   return hubConnection;
+  // }
 }

@@ -1,12 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, Inject } from '@angular/core';
-import { httpFactory } from '@angular/http/src/http_module';
-import {
-  HubConnection,
-  HubConnectionBuilder,
-  LogLevel,
-  HttpTransportType
-} from '@aspnet/signalr';
+import { Injectable } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
@@ -23,16 +16,16 @@ export class FlowerApiService {
     return this.http.get('/api/flower?count=' + count);
   }
 
-  //TODO merge it to standalone HubService
-  getLiveConnection(): HubConnection {
-    const hubConnection = new HubConnectionBuilder()
-      .configureLogging(LogLevel.Error)
-      .withUrl('/hub/room', {
-        skipNegotiation: true,
-        transport: HttpTransportType.WebSockets
-      })
-      .build();
+  // TODO merge it to standalone HubService
+  // getLiveConnection(): HubConnection {
+  //   const hubConnection = new HubConnectionBuilder()
+  //     .configureLogging(LogLevel.Error)
+  //     .withUrl('/hub/room', {
+  //       skipNegotiation: true,
+  //       transport: HttpTransportType.WebSockets
+  //     })
+  //     .build();
 
-    return hubConnection;
-  }
+  //   return hubConnection;
+  // }
 }

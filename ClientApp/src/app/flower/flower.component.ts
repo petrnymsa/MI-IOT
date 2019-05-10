@@ -31,13 +31,11 @@ export class FlowerComponent implements OnInit {
     this.dataHum.length = 0;
     this.api.getLast(this.count).subscribe(
       (res: EsesSensor[]) => {
-        //const part = res.reverse().slice(0, 30);
         res.forEach((p: EsesSensor) => {
           const date = this.dateFormatPipe.transform(p.date);
           this.labels.push(date);
           this.dataHum.push(p.humidity);
         });
-        console.log(res.length);
         this.chart.update();
         this.lastRefresh = new Date().toLocaleString();
       },

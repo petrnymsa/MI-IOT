@@ -23,6 +23,7 @@ import { FlowerComponent } from './flower/flower.component';
 import { FlowerRealTimeComponent } from './flower-real-time/flower-real-time.component';
 import { NgbModule, NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { NgbDateCustomParserFormatter } from './util/NgDateCustomParseFormatter';
+import { StateComponent } from './state/state.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { NgbDateCustomParserFormatter } from './util/NgDateCustomParseFormatter'
     RealTimeRoomComponent,
     SettingsComponent,
     FlowerComponent,
-    FlowerRealTimeComponent
+    FlowerRealTimeComponent,
+    StateComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

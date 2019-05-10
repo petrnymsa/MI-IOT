@@ -1,3 +1,4 @@
+import { HubService } from './../services/hub-connection.service';
 import { FlowerApiService } from './../services/flower-api.service';
 import { EsesSensor } from './../data/EsesSensor';
 import { Component, OnInit } from '@angular/core';
@@ -19,10 +20,11 @@ export class FlowerRealTimeComponent implements OnInit {
   status: string;
   isOk = true;
 
-  private hubConnection: signalR.HubConnection;
+  // private hubConnection: signalR.HubConnection;
 
   constructor(
     private api: FlowerApiService,
+    private hubService: HubService,
     private dateFormatPipe: DateFormatPipe
   ) { }
 
@@ -30,26 +32,19 @@ export class FlowerRealTimeComponent implements OnInit {
     this.createChart();
 
     this.api.getLast(this.maxEntries).subscribe((res: EsesSensor[]) => {
-      //const part = res.reverse().slice(0, 30);
       res.forEach((p: EsesSensor) => {
         const date = this.dateFormatPipe.transform(p.date);
         this.labels.push(date);
         this.data_hum.push(p.humidity);
         this.actual_hum = p.humidity;
       });
-      console.log(res.length);
       this.chart.update();
       this.refreshStatus();
-    }); // error path);
+    });
 
-    this.hubConnection = this.api.getLiveConnection();
+    const hubConnection = this.hubService.getConnection();
 
-    this.hubConnection
-      .start()
-      .then(() => console.log('Connection started!'))
-      .catch(err => console.log('Error while establishing connection: ' + err));
-
-    this.hubConnection.on('flowerUpdate', (msg: EsesSensor) => {
+    hubConnection.on('flowerUpdate', (msg: EsesSensor) => {
       const date = this.dateFormatPipe.transform(msg.date);
       this.addData(date, msg.humidity);
       this.refreshStatus();
@@ -77,7 +72,7 @@ export class FlowerRealTimeComponent implements OnInit {
       this.status = 'Jsem v pohodě';
       this.isOk = true;
     } else {
-      this.status = 'Uber vodu, nebo se utopím';
+      this.status = 'Uber vodu nebo se utopím';
       this.isOk = false;
     }
   }

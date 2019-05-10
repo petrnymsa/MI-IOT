@@ -19,6 +19,9 @@ namespace WebServer
         private readonly ILogger<HeartBeatHostedService> _logger;
         private readonly IServiceProvider services;
 
+        const int BeatThresholdSeconds = 60;
+        const int CheckIntervalSeconds = 60;
+
         public HeartBeatHostedService(ILogger<HeartBeatHostedService> logger, IServiceProvider services)
         {
             this._logger = logger;
@@ -28,7 +31,7 @@ namespace WebServer
         public Task StartAsync(CancellationToken cancellationToken)
         {
             _logger.LogWarning("Start");
-            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(30));
+            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(CheckIntervalSeconds));
 
             return Task.CompletedTask;
         }
@@ -51,18 +54,17 @@ namespace WebServer
 
                 var now = DateTime.Now.TruncateMilliseconds();
                 var lastAlive = first.LastTimeAlive.TruncateMilliseconds();
-
                 var diff = now - lastAlive;
 
-                if (diff.TotalMilliseconds >= TimeSpan.FromMinutes(1).TotalMilliseconds)
+                if (diff.TotalMilliseconds >= TimeSpan.FromSeconds(BeatThresholdSeconds).TotalMilliseconds)
                 {
                     first.FailsInRow++;
                     _logger.LogError($"Device not alive: {first.FailsInRow} times");
                 }
+
                 first.LastEntry = now;
                 await context.SaveChangesAsync();
 
-                //todo inform status channel
                 var hub = scope.ServiceProvider.GetRequiredService<IHubContext<RoomHub>>();
                 _logger.LogInformation("Sending information over hub");
                 await hub.Clients.All.SendAsync(RoomHub.StatusUpdate, first.GetStatus().ToString());

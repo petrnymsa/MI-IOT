@@ -1,0 +1,27 @@
+.status-box{
+    display: flex;
+    margin: 2px;
+}
+
+.circle {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-left: 4px;
+}
+
+.circle-gray{
+    background-color: rgb(160, 160, 160);
+}
+
+.circle-red{
+    background-color: rgb(224, 67, 67);
+}
+
+.circle-green {
+    background-color: rgb(10, 179, 10);
+}
+
+.circle-orange {
+    background-color: rgb(233, 208, 67);
+}

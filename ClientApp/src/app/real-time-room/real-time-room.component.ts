@@ -1,3 +1,4 @@
+import { HubService } from './../services/hub-connection.service';
 import { RoomApiService } from '../services/room-api.service';
 import { Component, OnInit } from '@angular/core';
 import { TemperatureSensor } from '../data/TemperatureSensor';
@@ -17,12 +18,13 @@ export class RealTimeRoomComponent implements OnInit {
   actual_temp: number;
   actual_hum: number;
 
-  private hubConnection: signalR.HubConnection;
+  // private hubConnection: signalR.HubConnection;
 
   constructor(
     private roomApi: RoomApiService,
+    private hubService: HubService,
     private dateFormatPipe: DateFormatPipe
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.createChart();
@@ -30,25 +32,19 @@ export class RealTimeRoomComponent implements OnInit {
     this.roomApi
       .getLast(this.maxEntries)
       .subscribe((res: TemperatureSensor[]) => {
-        //const part = res.reverse().slice(0, 30);
+        // const part = res.reverse().slice(0, 30);
         res.forEach((p: TemperatureSensor) => {
           const date = this.dateFormatPipe.transform(p.date);
           this.labels.push(date);
           this.data_temp.push(p.temperature);
           this.data_hum.push(p.humidity);
         });
-        console.log(res.length);
         this.chart.update();
       }); // error path);
 
-    this.hubConnection = this.roomApi.getLiveConnection();
+    const hubConnection = this.hubService.getConnection();
 
-    this.hubConnection
-      .start()
-      .then(() => console.log('Connection started!'))
-      .catch(err => console.log('Error while establishing connection: ' + err));
-
-    this.hubConnection.on('roomUpdate', (msg: TemperatureSensor) => {
+    hubConnection.on('roomUpdate', (msg: TemperatureSensor) => {
       const date = this.dateFormatPipe.transform(msg.date);
       this.addData(date, msg.temperature, msg.humidity);
     });

@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebServer.Data;
+using WebServer.Hub;
 using WebServer.Models;
 
 namespace WebServer.Controllers
@@ -14,28 +16,30 @@ namespace WebServer.Controllers
     public class StatusController : ControllerBase
     {
         private readonly ServerDbContext context;
+        private readonly IHubContext<RoomHub> hubContext;
 
-        public StatusController(ServerDbContext context)
+        public StatusController(ServerDbContext context, IHubContext<RoomHub> hubContext)
         {
             this.context = context;
+            this.hubContext = hubContext;
         }
         [HttpGet]
-        public HeartBeatStatus Get()
+        public string Get()
         {
             var first = context.HeartBeatInfo.First();
-            return first.GetStatus();           
+            return first.GetStatus().ToString();           
         }
 
         [HttpPost]
-        public void SetStatus()
+        public async Task SetStatus()
         {
             var first = context.HeartBeatInfo.First();
             first.FailsInRow = 0;
             first.LastTimeAlive = DateTime.Now;
 
-            context.SaveChanges();
+            await context.SaveChangesAsync();
 
-            //todo Hub - inform status channel
+            await hubContext.Clients.All.SendAsync(RoomHub.StatusUpdate, first.GetStatus().ToString());
 
         }
     }
