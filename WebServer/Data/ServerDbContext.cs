@@ -21,6 +21,8 @@ namespace WebServer.Data
         public DbSet<HumiditySensorSnapshot> HumiditySensorSnapshots { get; set; }
         public DbSet<Settings> Settings { get; set; }
 
+        public DbSet<HeartBeatInfo> HeartBeatInfo { get; set; }
+
         protected override void OnModelCreating(ModelBuilder b)
         {
             b.Entity<TemperatureSensorSnapshot>().ToTable("TemperatureSensorSnapshot");
