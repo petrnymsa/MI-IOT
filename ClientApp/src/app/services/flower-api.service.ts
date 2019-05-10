@@ -5,7 +5,6 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class FlowerApiService {
-  // private baseUrl = 'http://10.0.0.149:5000';
   constructor(private http: HttpClient) { }
 
   getAll() {
@@ -15,17 +14,4 @@ export class FlowerApiService {
   getLast(count: number) {
     return this.http.get('/api/flower?count=' + count);
   }
-
-  // TODO merge it to standalone HubService
-  // getLiveConnection(): HubConnection {
-  //   const hubConnection = new HubConnectionBuilder()
-  //     .configureLogging(LogLevel.Error)
-  //     .withUrl('/hub/room', {
-  //       skipNegotiation: true,
-  //       transport: HttpTransportType.WebSockets
-  //     })
-  //     .build();
-
-  //   return hubConnection;
-  // }
 }

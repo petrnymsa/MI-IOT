@@ -30,21 +30,19 @@ export class SettingsComponent implements OnInit {
       isUndefined(this.settings.dhT11Interval) &&
       isUndefined(this.settings.esesInterval)
     ) {
-      alert('Nevalidni vsutp');
+      alert('Nevalidní vstup');
       return;
     }
 
     this.showMsg = false;
 
     this.api.send(this.settings).subscribe(
-      () => {},
+      () => { },
       error => {
         console.log(error);
         this.showMsg = false;
       },
       () => {
-        //on complete
-        console.log('send complete');
         this.showMsg = true;
       }
     );

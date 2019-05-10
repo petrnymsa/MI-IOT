@@ -1,17 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, Inject } from '@angular/core';
-import {
-  HubConnection,
-  HubConnectionBuilder,
-  LogLevel,
-  HttpTransportType
-} from '@aspnet/signalr';
-
+import { Injectable } from '@angular/core';
 @Injectable({
   providedIn: 'root'
 })
 export class RoomApiService {
-  // private baseUrl = 'http://10.0.0.149:5000';
   constructor(private http: HttpClient) { }
 
   getAll() {
@@ -44,16 +36,4 @@ export class RoomApiService {
   getLast(count: number) {
     return this.http.get('/api/room/last/' + count);
   }
-  // TODO merge it to standalone HubService
-  // getLiveConnection(): HubConnection {
-  //   const hubConnection = new HubConnectionBuilder()
-  //     .configureLogging(LogLevel.Error)
-  //     .withUrl('/hub/room', {
-  //       skipNegotiation: true,
-  //       transport: HttpTransportType.WebSockets
-  //     })
-  //     .build();
-
-  //   return hubConnection;
-  // }
 }

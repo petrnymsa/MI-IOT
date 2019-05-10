@@ -18,8 +18,6 @@ export class RealTimeRoomComponent implements OnInit {
   actual_temp: number;
   actual_hum: number;
 
-  // private hubConnection: signalR.HubConnection;
-
   constructor(
     private roomApi: RoomApiService,
     private hubService: HubService,
@@ -40,7 +38,7 @@ export class RealTimeRoomComponent implements OnInit {
           this.data_hum.push(p.humidity);
         });
         this.chart.update();
-      }); // error path);
+      });
 
     const hubConnection = this.hubService.getConnection();
 
