@@ -64,6 +64,8 @@ namespace WebServer
 
             services.AddSingleton<IInputDataParser<Models.HumiditySensorSnapshot>>(new HumiditySensorDataParser());
             services.AddSingleton<IInputDataParser<Models.TemperatureSensorSnapshot>>(new TemperatureSensorDataParser());
+
+            services.AddHostedService<HeartBeatHostedService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

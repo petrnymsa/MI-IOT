@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
 using System;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -61,6 +62,12 @@ namespace FakeDataClient
                 Print($"Recieved: {msg}", ConsoleColor.Cyan);
             });
 
+            connection.On<string>("statusUpdate", (msg) =>
+            {
+                Print($"Recieved status update: {msg}", ConsoleColor.Magenta);
+                
+            });
+
             try
             {
                 await connection.StartAsync();               
@@ -71,15 +78,27 @@ namespace FakeDataClient
             }
             Console.WriteLine("Connected");
 
-            var roomTimer = new Timer((t) =>
-            {
-                SendRoom(rnd, connection);
-            },null, TimeSpan.Zero, TimeSpan.FromMilliseconds(500));
+            //var roomTimer = new Timer((t) =>
+            //{
+            //    SendRoom(rnd, connection);
+            //},null, TimeSpan.Zero, TimeSpan.FromMilliseconds(500));
 
-            var flowerTimer = new Timer((t) =>
+            //var flowerTimer = new Timer((t) =>
+            //{
+            //    SendFlower(rnd, connection);
+            //}, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(2000));
+
+            Console.WriteLine("Press key to send update");
+            using (var client = new HttpClient())
             {
-                SendFlower(rnd, connection);
-            }, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(2000));
+                while (true)
+                {
+                    Console.ReadKey();
+
+                    await client.SendAsync(new HttpRequestMessage(HttpMethod.Post, "http://localhost:5000/api/status"));
+
+                }
+            }
 
             Console.WriteLine("--- PRESS KEY TO EXIT ---");
             Console.ReadKey();
