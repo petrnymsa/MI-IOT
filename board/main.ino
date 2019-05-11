@@ -23,7 +23,8 @@
 // -------- TIME INTERVALS -----------
 #define INTERVAL_DEFAULT_DHT11 900000 // each 15 minutes
 #define INTERVAL_DEFAULT_ESES 1800000 // each 30 minutes
-#define INTERVAL_SETTINGS 5000        // each 5 seconds
+#define INTERVAL_SETTINGS 30000       // each 30 seconds
+#define INTERVAL_STATUS 30000         // each 5 seconds
 // -----------------------------------------
 #define ESES_THRESHOLD 600 // when over, start water
 #define ESES_LOW 250       // minimum - stop water //TODO
@@ -44,6 +45,7 @@ int interval_eses = 0;
 unsigned long timer_dht11 = 0;
 unsigned long timer_eses = 0;
 unsigned long timer_settings = 0;
+unsigned long timer_status = 0;
 
 byte readFailedCount = 0;
 
@@ -92,6 +94,13 @@ void setup()
 
 void loop()
 {
+
+    if (millis() - timer_status > INTERVAL_STATUS)
+    {
+        Serial.println(F("Sending heatbeat"));
+        timer_status = millis();
+        send_status();
+    }
 
     if (millis() - timer_settings > INTERVAL_SETTINGS)
     {
@@ -258,6 +267,26 @@ void http_post(const String &data, const char *endpoint)
     {
         Serial.print(F("Can't post data."));
         status_web = false;
+    }
+}
+
+void send_status()
+{
+    String contentType = "text/plain";
+    httpClient.post("/api/status", contentType, "dummy");
+    int statusCode = httpClient.responseStatusCode();
+    String response = httpClient.responseBody();
+
+    if (statusCode == 200)
+    {
+        Serial.println(F("Heartbeat ... OK"));
+    }
+    else
+    {
+        Serial.print(F("Heartbeat ... "));
+        Serial.print(statusCode);
+        Serial.print(F(", "));
+        Serial.println(response);
     }
 }
 
