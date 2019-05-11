@@ -20,7 +20,7 @@ namespace WebServer
         private readonly IServiceProvider services;
 
         const int BeatThresholdSeconds = 60;
-        const int CheckIntervalSeconds = 30;
+        const int CheckIntervalSeconds = 10;
 
         public HeartBeatHostedService(ILogger<HeartBeatHostedService> logger, IServiceProvider services)
         {
