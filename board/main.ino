@@ -10,6 +10,8 @@
 #define SERVER_IP_PORT "10.0.0.149:5000"
 #define API_DHT11 "/api/room"
 #define API_ESES "/api/flower"
+#define API_SETTINGS "/api/settings/plain"
+#define API_STATUS "/api/status"
 // ---------- PINS -------------------------
 #define DHTPIN 5
 #define LED_DHT11 47
@@ -24,7 +26,7 @@
 #define INTERVAL_DEFAULT_DHT11 900000 // each 15 minutes
 #define INTERVAL_DEFAULT_ESES 1800000 // each 30 minutes
 #define INTERVAL_SETTINGS 30000       // each 30 seconds
-#define INTERVAL_STATUS 30000         // each 5 seconds
+#define INTERVAL_STATUS 30000         // each 30 seconds
 // -----------------------------------------
 #define ESES_THRESHOLD 600 // when over, start water
 #define ESES_LOW 250       // minimum - stop water //TODO
@@ -97,7 +99,6 @@ void loop()
 
     if (millis() - timer_status > INTERVAL_STATUS)
     {
-        Serial.println(F("Sending heatbeat"));
         timer_status = millis();
         send_status();
     }
@@ -116,8 +117,7 @@ void loop()
 
     bool eses_read = false;
     bool dht11_read = false;
-    // pokud je rozdíl mezi aktuálním časem a posledním
-    // uloženým větší než 3000 ms, proveď měření
+
     if (millis() - timer_eses > interval_eses)
     {
         Serial.print(F("ESES: "));
@@ -179,13 +179,6 @@ void set_leds()
     {
         digitalWrite(LED_OK, LOW);
 
-        // Serial.print(F("STATUS:"));
-        // Serial.print(status_sensor_dht11);
-        // Serial.print(" ");
-        // Serial.print(status_sensor_eses);
-        // Serial.print(" ");
-        // Serial.print(status_web);
-        // Serial.println(" ");
         if (!status_sensor_dht11)
             digitalWrite(LED_DHT11, HIGH);
         else
@@ -273,7 +266,7 @@ void http_post(const String &data, const char *endpoint)
 void send_status()
 {
     String contentType = "text/plain";
-    httpClient.post("/api/status", contentType, "dummy");
+    httpClient.post(API_STATUS, contentType, "dummy");
     int statusCode = httpClient.responseStatusCode();
     String response = httpClient.responseBody();
 
@@ -292,7 +285,7 @@ void send_status()
 
 bool http_get_settings(int *dht11Interval, int *esesInterval)
 {
-    httpClient.get("/api/settings/plain");
+    httpClient.get(API_SETTINGS);
     int statusCode = httpClient.responseStatusCode();
     String response = httpClient.responseBody();
     int id;
