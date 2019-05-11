@@ -65,10 +65,10 @@ export class FlowerRealTimeComponent implements OnInit {
   }
 
   refreshStatus() {
-    if (this.actual_hum >= 600) {
+    if (this.actual_hum >= 400) {
       this.status = 'Potřebuji zalít';
       this.isOk = false;
-    } else if (this.actual_hum >= 300) {
+    } else if (this.actual_hum >= 220) {
       this.status = 'Jsem v pohodě';
       this.isOk = true;
     } else {
